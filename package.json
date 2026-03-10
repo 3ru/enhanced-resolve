@@ -22,6 +22,7 @@
   ],
   "scripts": {
     "prepare": "husky",
+    "benchmark:unsafe-cache-normalization": "node --expose-gc benchmark/unsafe-cache-normalization.js",
     "lint": "npm run lint:code && npm run lint:types && npm run lint:types-test && npm run lint:special && npm run fmt:check && npm run lint:spellcheck",
     "lint:code": "eslint --cache .",
     "lint:special": "node node_modules/tooling/inherit-types && node node_modules/tooling/generate-types",
