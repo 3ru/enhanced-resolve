@@ -225,16 +225,14 @@ describe("unsafe-cache", () => {
 			});
 		});
 
-		it("should reuse cached results for bare specifiers inside one package", () => {
+		it("should keep bare specifier cache keys tied to the lookup directory", () => {
 			expect(cachedResolve(deepContext, "react")).toBe(rootReactTarget);
 			poisonCache("cache-hit");
-			expect(cachedResolve(shallowContext, "react")).toBe("cache-hit");
+			expect(cachedResolve(shallowContext, "react")).toBe(rootReactTarget);
 		});
 
 		it("should reuse cached results for relative requests inside one package", () => {
-			expect(cachedResolve(deepContext, "../../shared")).toBe(
-				rootSharedTarget,
-			);
+			expect(cachedResolve(deepContext, "../../shared")).toBe(rootSharedTarget);
 			poisonCache("cache-hit");
 			expect(cachedResolve(shallowContext, "../shared")).toBe("cache-hit");
 		});
@@ -248,15 +246,11 @@ describe("unsafe-cache", () => {
 		it("should not reuse cached bare specifiers when a nested node_modules shadows the package root", () => {
 			expect(cachedResolve(shallowContext, "react")).toBe(rootReactTarget);
 			poisonCache("cache-hit");
-			expect(cachedResolve(shadowedContext, "react")).toBe(
-				shadowedReactTarget,
-			);
+			expect(cachedResolve(shadowedContext, "react")).toBe(shadowedReactTarget);
 		});
 
 		it("should keep relative requests distinct from bare specifiers", () => {
-			expect(cachedResolve(deepContext, "../../shared")).toBe(
-				rootSharedTarget,
-			);
+			expect(cachedResolve(deepContext, "../../shared")).toBe(rootSharedTarget);
 			poisonCache("cache-hit");
 			expect(cachedResolve(shallowContext, "shared")).toBe(
 				rootSharedPackageTarget,
