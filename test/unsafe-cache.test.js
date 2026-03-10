@@ -14,6 +14,7 @@ describe("unsafe-cache", () => {
 		"unsafe-cache-normalization",
 	);
 	const nestedFixturePath = path.join(fixturePath, "packages", "nested");
+	const shadowedContext = path.join(fixturePath, "src", "components");
 	const deepContext = path.join(fixturePath, "src", "a", "b");
 	const shallowContext = path.join(fixturePath, "src", "b");
 	const nestedContext = path.join(nestedFixturePath, "src");
@@ -32,6 +33,14 @@ describe("unsafe-cache", () => {
 	);
 	const nestedReactTarget = path.join(
 		nestedFixturePath,
+		"node_modules",
+		"react",
+		"index.js",
+	);
+	const shadowedReactTarget = path.join(
+		fixturePath,
+		"src",
+		"components",
 		"node_modules",
 		"react",
 		"index.js",
@@ -234,6 +243,14 @@ describe("unsafe-cache", () => {
 			expect(cachedResolve(deepContext, "react")).toBe(rootReactTarget);
 			poisonCache("cache-hit");
 			expect(cachedResolve(nestedContext, "react")).toBe(nestedReactTarget);
+		});
+
+		it("should not reuse cached bare specifiers when a nested node_modules shadows the package root", () => {
+			expect(cachedResolve(shallowContext, "react")).toBe(rootReactTarget);
+			poisonCache("cache-hit");
+			expect(cachedResolve(shadowedContext, "react")).toBe(
+				shadowedReactTarget,
+			);
 		});
 
 		it("should keep relative requests distinct from bare specifiers", () => {
